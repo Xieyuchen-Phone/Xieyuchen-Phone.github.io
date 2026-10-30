@@ -50,8 +50,11 @@ function cdnEl(el){
  }
 }
 /* 探测 CDN 是否真能直出内容：必须 2.5s 内加载成功才算可用（301 跳 raw 的情况会超时，直接放弃） */
+/* 只在 GitHub Pages 上探测 CDN：其他托管（如国内可直连的应用域名）本身就快，
+   再绕道 jsDelivr 反而可能更慢，一律走同源站内路径 */
+const ON_GH=location.hostname.indexOf('github.io')>=0;
 function cdnProbe(){
- if(CDN_ON)return;
+ if(CDN_ON||!ON_GH)return;
  const u=CDN_BASE+'assets/avatar/xie.jpg';
  const i=new Image();let done=false;
  const now=()=>(window.performance&&performance.now)?performance.now():Date.now();
